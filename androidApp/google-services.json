@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "861129828943",
+    "project_id": "ourdailyfinances",
+    "storage_bucket": "ourdailyfinances.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861129828943:android:b1c45286979dcf717e183a",
+        "android_client_info": {
+          "package_name": "com.daytimegaming.ourdailyfinances"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7emEsbYnAKlU0iQd30gbf2wQ6Xxe7ii0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
