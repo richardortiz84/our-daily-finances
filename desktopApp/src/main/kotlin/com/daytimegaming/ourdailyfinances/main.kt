@@ -12,12 +12,16 @@ import dev.gitlive.firebase.initialize
 fun main() {
     initFirebase()
     initKoin()
+
     application {
         Window(
             onCloseRequest = ::exitApplication,
             title = "OurDailyFinances",
         ) {
-            App()
+            App(
+                darkTheme = true, //isSystemInDarkTheme(),
+                dynamicColor = false,
+            )
         }
     }
 }
