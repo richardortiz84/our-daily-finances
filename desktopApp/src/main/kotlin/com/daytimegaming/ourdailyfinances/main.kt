@@ -1,6 +1,7 @@
 package com.daytimegaming.ourdailyfinances
 
 import android.app.Application
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.daytimegaming.ourdailyfinances.di.initKoin
@@ -16,7 +17,8 @@ fun main() {
     application {
         Window(
             onCloseRequest = ::exitApplication,
-            title = "OurDailyFinances",
+            title = "Our Daily Finances",
+            icon = painterResource("icon.png"),
         ) {
             App(
                 darkTheme = true, //isSystemInDarkTheme(),
