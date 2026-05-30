@@ -34,4 +34,8 @@ class AccountRepositoryImpl(private val service: AccountService) : AccountReposi
     override suspend fun createLinkToken(): String {
         return service.createLinkToken().linkToken
     }
+
+    override suspend fun exchangePublicToken(publicToken: String, institutionName: String?) {
+        service.exchangePublicToken(publicToken, institutionName)
+    }
 }
