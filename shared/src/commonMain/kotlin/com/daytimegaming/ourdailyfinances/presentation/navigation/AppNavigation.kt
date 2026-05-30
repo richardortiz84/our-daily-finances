@@ -60,6 +60,7 @@ fun AppNavigation(isAuthenticated: Boolean) {
                     onDashboardClick = { dashboardId ->
                         backStack.add(AppRoute.DashboardDetail(dashboardId))
                     },
+                    onPlaidTokenReady = { /* Platform-specific Plaid Link launch wired up per-platform */ },
                 )
             }
             entry<AppRoute.DashboardDetail> { route ->
