@@ -61,16 +61,10 @@ class HomeViewModel(
 
     fun requestAddAccount() {
         viewModelScope.launch {
-            val current = _state.value
-            if (current is HomeScreenState.Loaded) {
-                _state.update { current.copy(isAddingAccount = true) }
-            }
+            _state.update { s -> if (s is HomeScreenState.Loaded) s.copy(isAddingAccount = true) else s }
             try {
                 val token = accountUseCase.CreateLinkToken()
-                val loaded = _state.value
-                if (loaded is HomeScreenState.Loaded) {
-                    _state.update { loaded.copy(isAddingAccount = false) }
-                }
+                _state.update { s -> if (s is HomeScreenState.Loaded) s.copy(isAddingAccount = false) else s }
                 _plaidLinkTokenEvent.emit(token)
             } catch (e: Exception) {
                 _state.update { HomeScreenState.Error(e.message ?: "Failed to start account linking") }
