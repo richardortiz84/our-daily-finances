@@ -27,7 +27,10 @@ private val navSavedStateConfig = SavedStateConfiguration {
 }
 
 @Composable
-fun AppNavigation(isAuthenticated: Boolean) {
+fun AppNavigation(
+    isAuthenticated: Boolean,
+    onPlaidTokenReady: (String) -> Unit,
+) {
     val backStack: NavBackStack<NavKey> = rememberNavBackStack(navSavedStateConfig, AppRoute.Login)
 
     LaunchedEffect(isAuthenticated) {
@@ -60,7 +63,7 @@ fun AppNavigation(isAuthenticated: Boolean) {
                     onDashboardClick = { dashboardId ->
                         backStack.add(AppRoute.DashboardDetail(dashboardId))
                     },
-                    onPlaidTokenReady = { /* Platform-specific Plaid Link launch wired up per-platform */ },
+                    onPlaidTokenReady = onPlaidTokenReady,
                 )
             }
             entry<AppRoute.DashboardDetail> { route ->

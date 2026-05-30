@@ -11,7 +11,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun App(
     darkTheme: Boolean,
-    dynamicColor: Boolean
+    dynamicColor: Boolean,
+    onPlaidTokenReady: (String) -> Unit = {},
 ) {
     AppTheme(
         darkTheme = darkTheme,
@@ -19,6 +20,9 @@ fun App(
     ) {
         val mainViewModel = koinViewModel<MainViewModel>()
         val currentUser by mainViewModel.currentUser.collectAsStateWithLifecycle()
-        AppNavigation(isAuthenticated = currentUser != null)
+        AppNavigation(
+            isAuthenticated = currentUser != null,
+            onPlaidTokenReady = onPlaidTokenReady,
+        )
     }
 }
