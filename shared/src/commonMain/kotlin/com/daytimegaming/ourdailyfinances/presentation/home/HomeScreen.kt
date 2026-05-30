@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -92,6 +93,21 @@ private fun ScreenContent(
                 }
             }
             is HomeScreenState.Loaded -> {
+                if (state.isLinkingAccount) {
+                    AlertDialog(
+                        onDismissRequest = {},
+                        title = { Text("Linking your account...") },
+                        text = {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        },
+                        confirmButton = {},
+                    )
+                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
