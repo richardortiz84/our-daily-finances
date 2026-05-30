@@ -30,4 +30,8 @@ class AccountRepositoryImpl(private val service: AccountService) : AccountReposi
             emit(Response.Error(e.message ?: "Failed to load accounts"))
         }
     }
+
+    override suspend fun createLinkToken(): String {
+        return service.createLinkToken().linkToken
+    }
 }
