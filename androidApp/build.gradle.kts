@@ -14,23 +14,23 @@ kotlin {
     }
 }
 dependencies {
+    debugImplementation(libs.compose.uiTooling)
+
     implementation(projects.shared)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.uiToolingPreview)
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.ktor.client.android)
-
-    implementation(project.dependencies.platform(libs.android.firebase.bom))
-
-    debugImplementation(libs.compose.uiTooling)
-
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.functions)
     implementation(libs.firebase.storage)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.ktor.client.android)
+    implementation(libs.plaid)
+
+    implementation(project.dependencies.platform(libs.android.firebase.bom))
 }
 
 android {

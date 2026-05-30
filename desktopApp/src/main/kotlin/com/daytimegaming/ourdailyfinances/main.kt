@@ -3,7 +3,10 @@ package com.daytimegaming.ourdailyfinances
 import android.app.Application
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import com.daytimegaming.ourdailyfinances.di.initKoin
 import com.google.firebase.FirebasePlatform
 import dev.gitlive.firebase.Firebase
@@ -15,10 +18,15 @@ fun main() {
     initKoin()
 
     application {
+        val state: WindowState = rememberWindowState(
+            placement = WindowPlacement.Maximized,
+        )
+
         Window(
             onCloseRequest = ::exitApplication,
             title = "Our Daily Finances",
             icon = painterResource("icon.png"),
+            state = state,
         ) {
             App(
                 darkTheme = true, //isSystemInDarkTheme(),
