@@ -2,6 +2,7 @@ package com.daytimegaming.ourdailyfinances.di
 
 import com.daytimegaming.ourdailyfinances.domain.usecase.AccountUseCase
 import com.daytimegaming.ourdailyfinances.domain.usecase.AuthUseCase
+import com.daytimegaming.ourdailyfinances.domain.usecase.CreateLinkToken
 import com.daytimegaming.ourdailyfinances.domain.usecase.DashboardUseCase
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetAccounts
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetCurrentUser
@@ -27,5 +28,6 @@ fun useCaseModule() = module {
     singleOf(::DashboardUseCase)
 
     singleOf(::GetAccounts)
+    singleOf(::CreateLinkToken)
     singleOf(::AccountUseCase)
 }
