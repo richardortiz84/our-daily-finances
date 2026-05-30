@@ -13,7 +13,13 @@ class CreateLinkToken(private val repo: AccountRepository) {
     suspend operator fun invoke(): String = repo.createLinkToken()
 }
 
+class ExchangePublicToken(private val repo: AccountRepository) {
+    suspend operator fun invoke(publicToken: String, institutionName: String?) =
+        repo.exchangePublicToken(publicToken, institutionName)
+}
+
 class AccountUseCase(
     val GetAccounts: GetAccounts,
     val CreateLinkToken: CreateLinkToken,
+    val ExchangePublicToken: ExchangePublicToken,
 )
