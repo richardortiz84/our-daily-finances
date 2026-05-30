@@ -7,8 +7,27 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
+import com.plaid.link.OpenPlaidLink
+import com.plaid.link.configuration.LinkTokenConfiguration
+import com.plaid.link.result.LinkExit
+import com.plaid.link.result.LinkSuccess
+import com.daytimegaming.ourdailyfinances.domain.plaid.PlaidEventBus
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+
+    private val plaidEventBus: PlaidEventBus by inject()
+
+    private val plaidLauncher = registerForActivityResult(OpenPlaidLink()) { result ->
+        when (result) {
+            is LinkSuccess -> lifecycleScope.launch { plaidEventBus.accountLinked() }
+            is LinkExit -> Unit
+            else -> Unit
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -16,6 +35,12 @@ class MainActivity : ComponentActivity() {
             App(
                 darkTheme = isSystemInDarkTheme(),
                 dynamicColor = false,
+                onPlaidTokenReady = { linkToken ->
+                    val config = LinkTokenConfiguration.Builder()
+                        .token(linkToken)
+                        .build()
+                    plaidLauncher.launch(config)
+                },
             )
         }
     }
@@ -25,7 +50,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppAndroidPreview() {
     App(
-        darkTheme = isSystemInDarkTheme(),
+        darkTheme = false,
         dynamicColor = false,
     )
 }
