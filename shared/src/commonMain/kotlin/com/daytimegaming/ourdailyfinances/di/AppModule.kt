@@ -2,10 +2,10 @@ package com.daytimegaming.ourdailyfinances.di
 
 import org.koin.core.context.startKoin
 
-fun initKoin() {
+fun initKoin(enableHttpLogging: Boolean = false) {
     startKoin {
         modules(
-            networkModule(),
+            networkModule(enableHttpLogging),
             repositoryModule(),
             useCaseModule(),
             viewModelModule(),

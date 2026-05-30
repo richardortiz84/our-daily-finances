@@ -12,5 +12,5 @@ class AccountService(private val apiClient: ApiClient) {
         apiClient.http.get("${apiClient.baseUrl}/plaid/balance").body()
 
     suspend fun createLinkToken(): LinkTokenResponse =
-        apiClient.http.post("${apiClient.baseUrl}/link/token/create").body()
+        apiClient.http.post("${apiClient.baseUrl}/plaid/link/token").body()
 }

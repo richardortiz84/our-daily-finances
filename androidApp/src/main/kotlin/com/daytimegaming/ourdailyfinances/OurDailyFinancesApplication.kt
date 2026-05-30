@@ -10,6 +10,6 @@ class OurDailyFinancesApplication : Application() {
 
         FirebaseApp.initializeApp(this)
 
-        initKoin()
+        initKoin(enableHttpLogging = true)
     }
 }

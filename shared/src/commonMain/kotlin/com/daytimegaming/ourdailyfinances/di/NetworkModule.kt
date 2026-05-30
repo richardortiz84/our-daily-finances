@@ -5,9 +5,9 @@ import com.daytimegaming.ourdailyfinances.data.network.service.AccountService
 import com.daytimegaming.ourdailyfinances.data.network.service.DashboardService
 import org.koin.dsl.module
 
-fun networkModule() = module {
+fun networkModule(enableHttpLogging: Boolean = false) = module {
     single { httpClientEngine() }
-    single { ApiClient(get(), get()) }
+    single { ApiClient(get(), get(), enableHttpLogging) }
     single { AccountService(get()) }
     single { DashboardService(get()) }
 }
