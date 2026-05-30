@@ -10,5 +10,6 @@ sealed class HomeScreenState {
         val dashboards: List<Dashboard>,
         val accounts: List<Account>,
         val isAddingAccount: Boolean = false,
+        val isLinkingAccount: Boolean = false,
     ) : HomeScreenState()
 }
