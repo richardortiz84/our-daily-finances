@@ -22,7 +22,12 @@ class MainActivity : ComponentActivity() {
 
     private val plaidLauncher = registerForActivityResult(OpenPlaidLink()) { result ->
         when (result) {
-            is LinkSuccess -> lifecycleScope.launch { plaidEventBus.accountLinked() }
+            is LinkSuccess -> lifecycleScope.launch {
+                plaidEventBus.accountLinked(
+                    publicToken = result.publicToken,
+                    institutionName = result.metadata.institution?.name,
+                )
+            }
             is LinkExit -> Unit
             else -> Unit
         }
