@@ -9,5 +9,6 @@ sealed class HomeScreenState {
     data class Loaded(
         val dashboards: List<Dashboard>,
         val accounts: List<Account>,
+        val isAddingAccount: Boolean = false,
     ) : HomeScreenState()
 }
