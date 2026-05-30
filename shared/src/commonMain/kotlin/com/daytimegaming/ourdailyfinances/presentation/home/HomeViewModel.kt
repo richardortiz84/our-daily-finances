@@ -30,7 +30,17 @@ class HomeViewModel(
     init {
         load()
         viewModelScope.launch {
-            plaidEventBus.events.collect { load() }
+            plaidEventBus.events.collect { result ->
+                _state.update { s ->
+                    if (s is HomeScreenState.Loaded) s.copy(isLinkingAccount = true) else s
+                }
+                try {
+                    accountUseCase.ExchangePublicToken(result.publicToken, result.institutionName)
+                    load()
+                } catch (e: Exception) {
+                    _state.update { HomeScreenState.Error(e.message ?: "Failed to link account") }
+                }
+            }
         }
     }
 
