@@ -9,6 +9,11 @@ class GetAccounts(private val repo: AccountRepository) {
     operator fun invoke(): Flow<Response<List<Account>>> = repo.getAccounts()
 }
 
+class CreateLinkToken(private val repo: AccountRepository) {
+    suspend operator fun invoke(): String = repo.createLinkToken()
+}
+
 class AccountUseCase(
     val GetAccounts: GetAccounts,
+    val CreateLinkToken: CreateLinkToken,
 )
