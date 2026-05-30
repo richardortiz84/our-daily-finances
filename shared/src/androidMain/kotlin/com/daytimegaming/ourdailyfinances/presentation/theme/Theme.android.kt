@@ -1,16 +1,16 @@
 package com.daytimegaming.ourdailyfinances.presentation.theme
 
-import android.app.Activity
 import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 
 @Composable
 actual fun AppTheme(
@@ -31,12 +31,24 @@ actual fun AppTheme(
 
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(
-                window,
-                view
-            ).isAppearanceLightStatusBars = darkTheme
+            var context = view.context
+            while (context is android.content.ContextWrapper) {
+                if (context is ComponentActivity) {
+                    break
+                }
+                context = context.baseContext
+            }
+            val activity = context as? ComponentActivity
+            activity?.enableEdgeToEdge(
+                statusBarStyle = if (darkTheme) {
+                    SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+                } else {
+                    SystemBarStyle.light(
+                        android.graphics.Color.TRANSPARENT,
+                        android.graphics.Color.TRANSPARENT
+                    )
+                }
+            )
         }
     }
 
