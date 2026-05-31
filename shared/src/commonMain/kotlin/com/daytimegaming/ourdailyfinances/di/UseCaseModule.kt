@@ -10,9 +10,11 @@ import com.daytimegaming.ourdailyfinances.domain.usecase.GetCurrentUser
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetDashboardDetail
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetDashboards
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetIdToken
+import com.daytimegaming.ourdailyfinances.domain.usecase.GetPlaidItems
 import com.daytimegaming.ourdailyfinances.domain.usecase.LoginUser
 import com.daytimegaming.ourdailyfinances.domain.usecase.RegisterUser
 import com.daytimegaming.ourdailyfinances.domain.usecase.SignOutUser
+import com.daytimegaming.ourdailyfinances.domain.usecase.UnlinkPlaidItem
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -31,5 +33,7 @@ fun useCaseModule() = module {
     singleOf(::GetAccounts)
     singleOf(::CreateLinkToken)
     singleOf(::ExchangePublicToken)
+    singleOf(::GetPlaidItems)
+    singleOf(::UnlinkPlaidItem)
     singleOf(::AccountUseCase)
 }
