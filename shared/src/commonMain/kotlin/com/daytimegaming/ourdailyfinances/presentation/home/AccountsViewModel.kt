@@ -72,15 +72,25 @@ class AccountsViewModel(
         }
     }
 
+    private var isRequestingToken = false
+
     fun requestAddAccount() {
+        val currentState = _state.value
+        val isAlreadyAdding = (currentState as? AccountsScreenState.Loaded)?.isAddingAccount == true
+        if (isRequestingToken || isAlreadyAdding) return
+
+        isRequestingToken = true
+        _state.update { s -> if (s is AccountsScreenState.Loaded) s.copy(isAddingAccount = true) else s }
+
         viewModelScope.launch {
-            _state.update { s -> if (s is AccountsScreenState.Loaded) s.copy(isAddingAccount = true) else s }
             try {
                 val token = accountUseCase.CreateLinkToken()
                 _state.update { s -> if (s is AccountsScreenState.Loaded) s.copy(isAddingAccount = false) else s }
                 _plaidLinkTokenEvent.emit(token)
             } catch (e: Exception) {
                 _state.update { AccountsScreenState.Error(e.message ?: "Failed to start account linking") }
+            } finally {
+                isRequestingToken = false
             }
         }
     }

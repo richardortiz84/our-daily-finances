@@ -28,7 +28,11 @@ class MainActivity : ComponentActivity() {
                     institutionName = result.metadata.institution?.name,
                 )
             }
-            is LinkExit -> Unit
+            is LinkExit -> {
+                result.error?.let { error ->
+                    android.util.Log.e("PlaidLink", "LinkExit error: ${error.errorCode} - ${error.errorMessage}")
+                }
+            }
             else -> Unit
         }
     }
