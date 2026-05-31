@@ -44,7 +44,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.daytimegaming.ourdailyfinances.domain.model.Transaction
 import com.daytimegaming.ourdailyfinances.presentation.theme.GlassCard
 import com.daytimegaming.ourdailyfinances.presentation.util.formatAmount
 import org.koin.compose.viewmodel.koinViewModel
