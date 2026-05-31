@@ -4,12 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,10 +31,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daytimegaming.ourdailyfinances.presentation.theme.GlassCard
 import com.daytimegaming.ourdailyfinances.presentation.util.formatAmount
+import com.daytimegaming.ourdailyfinances.presentation.util.toCurrencySymbol
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -77,15 +82,14 @@ fun AccountDetailScreen(
                 }
                 is AccountDetailScreenState.Loaded -> {
                     val account = s.account
-                    val currencySymbol = account.isoCurrencyCode ?: "$"
+                    val currencySymbol = account.isoCurrencyCode.toCurrencySymbol()
 
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
                     ) {
                         // Account Hero Card
-                        GlassCard(modifier = Modifier.fillMaxWidth()) {
+                        GlassCard(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                             Text(
                                 text = account.subtype?.uppercase() ?: account.type.uppercase(),
                                 style = MaterialTheme.typography.labelSmall,
@@ -121,17 +125,19 @@ fun AccountDetailScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
+                            modifier = Modifier.padding(horizontal = 16.dp),
                             text = "Account Transactions",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         if (s.transactions.isEmpty()) {
-                            GlassCard(modifier = Modifier.fillMaxWidth()) {
+                            GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                                 Text(
                                     text = "No recent transactions found.",
                                     style = MaterialTheme.typography.bodyMedium,
@@ -141,7 +147,8 @@ fun AccountDetailScreen(
                         } else {
                             LazyColumn(
                                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(16.dp),
                             ) {
                                 items(s.transactions) { tx ->
                                     GlassCard(modifier = Modifier.fillMaxWidth()) {
@@ -150,7 +157,9 @@ fun AccountDetailScreen(
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Column {
+                                            Column(
+                                                modifier = Modifier.weight(1.3f)
+                                            ) {
                                                 Text(
                                                     text = tx.merchantName ?: tx.name,
                                                     style = MaterialTheme.typography.headlineMedium,
@@ -192,6 +201,9 @@ fun AccountDetailScreen(
                                                     }
                                                 }
                                             }
+
+                                            Spacer(modifier = Modifier.width(8.dp))
+
                                             // Plaid API: positive = debit (money out), negative = credit (money in)
                                             val formattedAmount = if (tx.amount > 0) {
                                                 "-$currencySymbol${tx.amount.formatAmount()}"
@@ -200,9 +212,11 @@ fun AccountDetailScreen(
                                             }
                                             val color = if (tx.amount < 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                                             Text(
+                                                modifier = Modifier.wrapContentWidth(),
                                                 text = formattedAmount,
                                                 style = MaterialTheme.typography.headlineMedium,
-                                                color = color
+                                                color = color,
+                                                textAlign = TextAlign.End,
                                             )
                                         }
                                     }

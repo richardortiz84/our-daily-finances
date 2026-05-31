@@ -84,7 +84,7 @@ fun DashboardsScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "$ ${s.totalBalance.formatAmount()}",
+                        text = "$${s.totalBalance.formatAmount()}",
                         style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.primary
                     )

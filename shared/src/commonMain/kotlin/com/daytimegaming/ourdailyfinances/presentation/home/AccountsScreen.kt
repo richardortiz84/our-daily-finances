@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daytimegaming.ourdailyfinances.presentation.theme.GlassCard
 import com.daytimegaming.ourdailyfinances.presentation.util.formatAmount
+import com.daytimegaming.ourdailyfinances.presentation.util.toCurrencySymbol
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -141,7 +142,7 @@ fun AccountsScreen(
                                     }
                                     account.currentBalance?.let { balance ->
                                         Text(
-                                            text = "${account.isoCurrencyCode ?: "$"} ${balance.formatAmount()}",
+                                            text = "${account.isoCurrencyCode.toCurrencySymbol()}${balance.formatAmount()}",
                                             style = MaterialTheme.typography.headlineMedium,
                                             color = MaterialTheme.colorScheme.primary
                                         )
