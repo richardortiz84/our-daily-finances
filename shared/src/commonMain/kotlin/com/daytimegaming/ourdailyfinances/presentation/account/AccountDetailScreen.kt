@@ -152,7 +152,7 @@ fun AccountDetailScreen(
                                         ) {
                                             Column {
                                                 Text(
-                                                    text = tx.merchant,
+                                                    text = tx.merchantName ?: tx.name,
                                                     style = MaterialTheme.typography.headlineMedium,
                                                     color = MaterialTheme.colorScheme.onSurface
                                                 )
@@ -172,12 +172,12 @@ fun AccountDetailScreen(
                                                             .padding(horizontal = 8.dp, vertical = 2.dp)
                                                     ) {
                                                         Text(
-                                                            text = tx.category,
+                                                            text = tx.category.firstOrNull() ?: "",
                                                             style = MaterialTheme.typography.labelSmall,
                                                             color = MaterialTheme.colorScheme.secondary
                                                         )
                                                     }
-                                                    if (tx.isPending) {
+                                                    if (tx.pending) {
                                                         Box(
                                                             modifier = Modifier
                                                                 .background(Color(0x33FFB4AB), shape = RoundedCornerShape(999.dp))
@@ -192,12 +192,13 @@ fun AccountDetailScreen(
                                                     }
                                                 }
                                             }
-                                            val formattedAmount = if (tx.amount < 0) {
-                                                "-$currencySymbol${kotlin.math.abs(tx.amount).formatAmount()}"
+                                            // Plaid API: positive = debit (money out), negative = credit (money in)
+                                            val formattedAmount = if (tx.amount > 0) {
+                                                "-$currencySymbol${tx.amount.formatAmount()}"
                                             } else {
-                                                "+$currencySymbol${tx.amount.formatAmount()}"
+                                                "+$currencySymbol${kotlin.math.abs(tx.amount).formatAmount()}"
                                             }
-                                            val color = if (tx.amount > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                            val color = if (tx.amount < 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                                             Text(
                                                 text = formattedAmount,
                                                 style = MaterialTheme.typography.headlineMedium,
