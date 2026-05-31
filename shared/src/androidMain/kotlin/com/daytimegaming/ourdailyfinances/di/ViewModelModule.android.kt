@@ -21,5 +21,5 @@ actual fun viewModelModule(): Module = module {
     viewModelOf(::TransactionsViewModel)
     viewModelOf(::SettingsViewModel)
     viewModel { params -> DashboardDetailViewModel(params.get(), get()) }
-    viewModel { params -> AccountDetailViewModel(params.get(), get()) }
+    viewModel { params -> AccountDetailViewModel(params.get(), get(), get()) }
 }
