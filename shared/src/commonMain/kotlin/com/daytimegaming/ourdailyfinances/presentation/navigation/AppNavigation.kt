@@ -6,13 +6,13 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.savedstate.serialization.SavedStateConfiguration
 import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
+import com.daytimegaming.ourdailyfinances.presentation.account.AccountDetailScreen
 import com.daytimegaming.ourdailyfinances.presentation.auth.LoginScreen
 import com.daytimegaming.ourdailyfinances.presentation.auth.RegisterScreen
 import com.daytimegaming.ourdailyfinances.presentation.dashboard.DashboardDetailScreen
 import com.daytimegaming.ourdailyfinances.presentation.home.HomeScreen
-import com.daytimegaming.ourdailyfinances.presentation.manageaccounts.ManageAccountsScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
@@ -23,7 +23,7 @@ private val navSavedStateConfig = SavedStateConfiguration {
             subclass(AppRoute.Register::class, AppRoute.Register.serializer())
             subclass(AppRoute.Home::class, AppRoute.Home.serializer())
             subclass(AppRoute.DashboardDetail::class, AppRoute.DashboardDetail.serializer())
-            subclass(AppRoute.ManageAccounts::class, AppRoute.ManageAccounts.serializer())
+            subclass(AppRoute.AccountDetail::class, AppRoute.AccountDetail.serializer())
         }
     }
 }
@@ -65,8 +65,10 @@ fun AppNavigation(
                     onDashboardClick = { dashboardId ->
                         backStack.add(AppRoute.DashboardDetail(dashboardId))
                     },
+                    onAccountClick = { accountId ->
+                        backStack.add(AppRoute.AccountDetail(accountId))
+                    },
                     onPlaidTokenReady = onPlaidTokenReady,
-                    onManageAccounts = { backStack.add(AppRoute.ManageAccounts) },
                 )
             }
             entry<AppRoute.DashboardDetail> { route ->
@@ -75,8 +77,9 @@ fun AppNavigation(
                     onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
-            entry<AppRoute.ManageAccounts> {
-                ManageAccountsScreen(
+            entry<AppRoute.AccountDetail> { route ->
+                AccountDetailScreen(
+                    accountId = route.accountId,
                     onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }

@@ -41,6 +41,13 @@ fun ManageAccountsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    androidx.compose.runtime.LaunchedEffect(state) {
+        val loaded = state as? ManageAccountsScreenState.Loaded
+        if (loaded != null && loaded.items.isEmpty()) {
+            onNavigateBack()
+        }
+    }
+
     val loaded = state as? ManageAccountsScreenState.Loaded
     if (loaded?.unlinkingItemId != null) {
         val item = loaded.items.find { it.itemId == loaded.unlinkingItemId }

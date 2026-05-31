@@ -46,70 +46,87 @@ fun TransactionsScreen(
 
         when (val s = state) {
             is TransactionsScreenState.Loaded -> {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(16.dp),
-                ) {
-                    items(s.transactions) { tx ->
-                        GlassCard(modifier = Modifier.fillMaxWidth()) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column {
-                                    Text(
-                                        text = tx.merchant,
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
+                if (s.transactions.isEmpty()) {
+                    GlassCard(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                        Text(
+                            text = "No transactions to display.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(16.dp),
+                    ) {
+                        items(s.transactions) { tx ->
+                            GlassCard(modifier = Modifier.fillMaxWidth()) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column {
                                         Text(
-                                            text = tx.date,
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            text = tx.merchant,
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
                                         )
-                                        Box(
-                                            modifier = Modifier
-                                                .background(Color(0x1FBEC6E0), shape = RoundedCornerShape(999.dp))
-                                                .padding(horizontal = 8.dp, vertical = 2.dp)
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                                         ) {
                                             Text(
-                                                text = tx.category,
+                                                text = tx.date,
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = MaterialTheme.colorScheme.secondary
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
-                                        }
-                                        if (tx.isPending) {
                                             Box(
                                                 modifier = Modifier
-                                                    .background(Color(0x33FFB4AB), shape = RoundedCornerShape(999.dp))
+                                                    .background(
+                                                        Color(0x1FBEC6E0),
+                                                        shape = RoundedCornerShape(999.dp)
+                                                    )
                                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                                             ) {
                                                 Text(
-                                                    text = "Pending",
+                                                    text = tx.category,
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    color = MaterialTheme.colorScheme.error
+                                                    color = MaterialTheme.colorScheme.secondary
                                                 )
+                                            }
+                                            if (tx.isPending) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .background(
+                                                            Color(0x33FFB4AB),
+                                                            shape = RoundedCornerShape(999.dp)
+                                                        )
+                                                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                                                ) {
+                                                    Text(
+                                                        text = "Pending",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = MaterialTheme.colorScheme.error
+                                                    )
+                                                }
                                             }
                                         }
                                     }
+                                    val formattedAmount = if (tx.amount < 0) {
+                                        "-$${kotlin.math.abs(tx.amount).formatAmount()}"
+                                    } else {
+                                        "+$${tx.amount.formatAmount()}"
+                                    }
+                                    val color =
+                                        if (tx.amount > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                    Text(
+                                        text = formattedAmount,
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        color = color
+                                    )
                                 }
-                                val formattedAmount = if (tx.amount < 0) {
-                                    "-$${kotlin.math.abs(tx.amount).formatAmount()}"
-                                } else {
-                                    "+$${tx.amount.formatAmount()}"
-                                }
-                                val color = if (tx.amount > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                                Text(
-                                    text = formattedAmount,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    color = color
-                                )
                             }
                         }
                     }

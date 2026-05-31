@@ -18,16 +18,13 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigationevent.NavigationEventInfo
-import androidx.navigationevent.compose.NavigationBackHandler
-import androidx.navigationevent.compose.rememberNavigationEventState
 
 private enum class HomeTab {
     Dashboards,
@@ -39,32 +36,16 @@ private enum class HomeTab {
 @Composable
 fun HomeScreen(
     onDashboardClick: (String) -> Unit,
+    onAccountClick: (String) -> Unit,
     onPlaidTokenReady: (String) -> Unit,
-    onManageAccounts: () -> Unit,
 ) {
-    val tabHistory: SnapshotStateList<HomeTab> = rememberSaveable(
-        saver = listSaver(
-            save = { list -> list.map { it.ordinal } },
-            restore = { list -> list.map { HomeTab.entries[it] }.toMutableStateList() },
-        )
-    ) { mutableListOf(HomeTab.Dashboards).toMutableStateList() }
-
-    val selectedTab = tabHistory.last()
-
-    NavigationBackHandler(
-        state = rememberNavigationEventState(NavigationEventInfo.None),
-        isBackEnabled =  tabHistory.size > 1,
-    ) {
-        tabHistory.removeLastOrNull()
-    }
+    var selectedTab by rememberSaveable { mutableStateOf(HomeTab.Dashboards) }
 
     Scaffold(
         bottomBar = {
             GlassBottomBar(
                 selectedTab = selectedTab,
-                onTabSelect = { tab ->
-                    if (tab != selectedTab) tabHistory.add(tab)
-                },
+                onTabSelect = { selectedTab = it }
             )
         }
     ) { innerPadding ->
@@ -78,8 +59,8 @@ fun HomeScreen(
                     onDashboardClick = onDashboardClick
                 )
                 HomeTab.Accounts -> AccountsScreen(
-                    onPlaidTokenReady = onPlaidTokenReady,
-                    onManageAccounts = onManageAccounts,
+                    onAccountClick = onAccountClick,
+                    onPlaidTokenReady = onPlaidTokenReady
                 )
                 HomeTab.Transactions -> TransactionsScreen()
                 HomeTab.Settings -> SettingsScreen()
