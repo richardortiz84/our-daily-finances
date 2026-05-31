@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.daytimegaming.ourdailyfinances.domain.Response
 import com.daytimegaming.ourdailyfinances.domain.model.Account
 import com.daytimegaming.ourdailyfinances.domain.plaid.PlaidEventBus
+import com.daytimegaming.ourdailyfinances.domain.plaid.PlaidItemsEventBus
 import com.daytimegaming.ourdailyfinances.domain.usecase.AccountUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,13 +21,14 @@ sealed class AccountsScreenState {
     data class Loaded(
         val accounts: List<Account>,
         val isAddingAccount: Boolean = false,
-        val isLinkingAccount: Boolean = false
+        val isLinkingAccount: Boolean = false,
     ) : AccountsScreenState()
 }
 
 class AccountsViewModel(
     private val accountUseCase: AccountUseCase,
-    private val plaidEventBus: PlaidEventBus
+    private val plaidEventBus: PlaidEventBus,
+    private val plaidItemsEventBus: PlaidItemsEventBus,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<AccountsScreenState>(AccountsScreenState.Loading)
@@ -49,6 +51,9 @@ class AccountsViewModel(
                     _state.update { AccountsScreenState.Error(e.message ?: "Failed to link account") }
                 }
             }
+        }
+        viewModelScope.launch {
+            plaidItemsEventBus.events.collect { load() }
         }
     }
 
