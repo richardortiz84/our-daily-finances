@@ -14,6 +14,7 @@ data class DashboardDetail(
     val inviteCode: String?,
     val members: List<DashboardMember>,
     val accounts: List<DashboardAccount>,
+    val transactions: List<Transaction> = emptyList(),
 )
 
 data class DashboardMember(

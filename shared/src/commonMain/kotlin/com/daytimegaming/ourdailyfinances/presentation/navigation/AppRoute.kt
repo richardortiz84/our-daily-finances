@@ -11,4 +11,5 @@ sealed class AppRoute : NavKey {
     @Serializable data class DashboardDetail(val dashboardId: String) : AppRoute()
     @Serializable data class AccountDetail(val accountId: String) : AppRoute()
     @Serializable data object ManageAccounts : AppRoute()
+    @Serializable data object CreateDashboard : AppRoute()
 }

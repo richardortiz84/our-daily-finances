@@ -7,6 +7,8 @@ import com.daytimegaming.ourdailyfinances.domain.usecase.DashboardUseCase
 import com.daytimegaming.ourdailyfinances.domain.usecase.ExchangePublicToken
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetAccounts
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetCurrentUser
+import com.daytimegaming.ourdailyfinances.domain.usecase.CreateDashboard
+import com.daytimegaming.ourdailyfinances.domain.usecase.AddDashboardAccount
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetDashboardDetail
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetDashboards
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetIdToken
@@ -28,6 +30,8 @@ fun useCaseModule() = module {
 
     singleOf(::GetDashboards)
     singleOf(::GetDashboardDetail)
+    singleOf(::CreateDashboard)
+    singleOf(::AddDashboardAccount)
     singleOf(::DashboardUseCase)
 
     singleOf(::GetAccounts)

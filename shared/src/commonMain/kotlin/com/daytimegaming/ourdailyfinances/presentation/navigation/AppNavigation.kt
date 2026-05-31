@@ -12,6 +12,7 @@ import com.daytimegaming.ourdailyfinances.presentation.account.AccountDetailScre
 import com.daytimegaming.ourdailyfinances.presentation.auth.LoginScreen
 import com.daytimegaming.ourdailyfinances.presentation.auth.RegisterScreen
 import com.daytimegaming.ourdailyfinances.presentation.dashboard.DashboardDetailScreen
+import com.daytimegaming.ourdailyfinances.presentation.dashboard.CreateDashboardScreen
 import com.daytimegaming.ourdailyfinances.presentation.home.HomeScreen
 import com.daytimegaming.ourdailyfinances.presentation.manageaccounts.ManageAccountsScreen
 import kotlinx.serialization.modules.SerializersModule
@@ -26,6 +27,7 @@ private val navSavedStateConfig = SavedStateConfiguration {
             subclass(AppRoute.DashboardDetail::class, AppRoute.DashboardDetail.serializer())
             subclass(AppRoute.AccountDetail::class, AppRoute.AccountDetail.serializer())
             subclass(AppRoute.ManageAccounts::class, AppRoute.ManageAccounts.serializer())
+            subclass(AppRoute.CreateDashboard::class, AppRoute.CreateDashboard.serializer())
         }
     }
 }
@@ -74,6 +76,9 @@ fun AppNavigation(
                     onManageAccounts = {
                         backStack.add(AppRoute.ManageAccounts)
                     },
+                    onCreateDashboard = {
+                        backStack.add(AppRoute.CreateDashboard)
+                    }
                 )
             }
             entry<AppRoute.DashboardDetail> { route ->
@@ -91,6 +96,15 @@ fun AppNavigation(
             entry<AppRoute.ManageAccounts> {
                 ManageAccountsScreen(
                     onNavigateBack = { backStack.removeLastOrNull() },
+                )
+            }
+            entry<AppRoute.CreateDashboard> {
+                CreateDashboardScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onDashboardCreated = { dashboardId ->
+                        backStack.removeLastOrNull()
+                        backStack.add(AppRoute.DashboardDetail(dashboardId))
+                    }
                 )
             }
         },

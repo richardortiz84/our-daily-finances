@@ -43,4 +43,20 @@ data class DashboardDetailDto(
     @SerialName("invite_code") val inviteCode: String? = null,
     @SerialName("members") val members: List<DashboardMemberDto>,
     @SerialName("accounts") val accounts: List<DashboardAccountDto>,
+    @SerialName("transactions") val transactions: List<TransactionDto> = emptyList(),
+)
+
+@Serializable
+data class CreateDashboardRequest(
+    @SerialName("name") val name: String,
+)
+
+@Serializable
+data class AddDashboardAccountRequest(
+    @SerialName("account_id") val accountId: String,
+)
+
+@Serializable
+data class MessageResponse(
+    @SerialName("message") val message: String,
 )

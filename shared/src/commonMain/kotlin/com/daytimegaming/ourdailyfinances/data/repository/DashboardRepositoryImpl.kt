@@ -6,6 +6,7 @@ import com.daytimegaming.ourdailyfinances.domain.model.Dashboard
 import com.daytimegaming.ourdailyfinances.domain.model.DashboardAccount
 import com.daytimegaming.ourdailyfinances.domain.model.DashboardDetail
 import com.daytimegaming.ourdailyfinances.domain.model.DashboardMember
+import com.daytimegaming.ourdailyfinances.domain.model.Transaction
 import com.daytimegaming.ourdailyfinances.domain.repository.DashboardRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -53,10 +54,47 @@ class DashboardRepositoryImpl(private val service: DashboardService) : Dashboard
                         addedByUserId = a.addedByUserId,
                     )
                 },
+                transactions = dto.transactions.map { t ->
+                    Transaction(
+                        transactionId = t.transactionId,
+                        accountId = t.accountId,
+                        amount = t.amount,
+                        date = t.date,
+                        name = t.name,
+                        merchantName = t.merchantName,
+                        category = t.category,
+                        pending = t.pending,
+                        isoCurrencyCode = t.isoCurrencyCode,
+                    )
+                }
             )
             emit(Response.Success(detail))
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: "Failed to load dashboard"))
+        }
+    }
+
+    override suspend fun createDashboard(name: String): Response<Dashboard> {
+        return try {
+            val dto = service.createDashboard(name)
+            val dashboard = Dashboard(
+                dashboardId = dto.dashboardId,
+                name = dto.name,
+                ownerUserId = dto.ownerUserId,
+                inviteCode = dto.inviteCode
+            )
+            Response.Success(dashboard)
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Failed to create dashboard")
+        }
+    }
+
+    override suspend fun addDashboardAccount(dashboardId: String, accountId: String): Response<Unit> {
+        return try {
+            service.addDashboardAccount(dashboardId, accountId)
+            Response.Success(Unit)
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Failed to add account to dashboard")
         }
     }
 }

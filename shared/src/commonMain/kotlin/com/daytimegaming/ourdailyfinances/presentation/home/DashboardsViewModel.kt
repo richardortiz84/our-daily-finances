@@ -6,6 +6,8 @@ import com.daytimegaming.ourdailyfinances.domain.Response
 import com.daytimegaming.ourdailyfinances.domain.model.Dashboard
 import com.daytimegaming.ourdailyfinances.domain.usecase.AccountUseCase
 import com.daytimegaming.ourdailyfinances.domain.usecase.DashboardUseCase
+import com.daytimegaming.ourdailyfinances.domain.plaid.PlaidEventBus
+import com.daytimegaming.ourdailyfinances.domain.plaid.PlaidItemsEventBus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -17,13 +19,16 @@ sealed class DashboardsScreenState {
     data class Error(val message: String) : DashboardsScreenState()
     data class Loaded(
         val dashboards: List<Dashboard>,
-        val totalBalance: Double
+        val totalBalance: Double,
+        val hasLinkedAccounts: Boolean
     ) : DashboardsScreenState()
 }
 
 class DashboardsViewModel(
     private val dashboardUseCase: DashboardUseCase,
-    private val accountUseCase: AccountUseCase
+    private val accountUseCase: AccountUseCase,
+    private val plaidEventBus: PlaidEventBus,
+    private val plaidItemsEventBus: PlaidItemsEventBus
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<DashboardsScreenState>(DashboardsScreenState.Loading)
@@ -31,6 +36,12 @@ class DashboardsViewModel(
 
     init {
         load()
+        viewModelScope.launch {
+            plaidEventBus.events.collect { load() }
+        }
+        viewModelScope.launch {
+            plaidItemsEventBus.events.collect { load() }
+        }
     }
 
     fun load() {
@@ -49,7 +60,8 @@ class DashboardsViewModel(
                         val total = accountsResponse.data.sumOf { it.currentBalance ?: 0.0 }
                         DashboardsScreenState.Loaded(
                             dashboards = dashboardsResponse.data,
-                            totalBalance = total
+                            totalBalance = total,
+                            hasLinkedAccounts = accountsResponse.data.isNotEmpty()
                         )
                     }
                     else -> DashboardsScreenState.Loading

@@ -15,7 +15,18 @@ class GetDashboardDetail(private val repo: DashboardRepository) {
         repo.getDashboardDetail(dashboardId)
 }
 
+class CreateDashboard(private val repo: DashboardRepository) {
+    suspend operator fun invoke(name: String): Response<Dashboard> = repo.createDashboard(name)
+}
+
+class AddDashboardAccount(private val repo: DashboardRepository) {
+    suspend operator fun invoke(dashboardId: String, accountId: String): Response<Unit> =
+        repo.addDashboardAccount(dashboardId, accountId)
+}
+
 class DashboardUseCase(
     val GetDashboards: GetDashboards,
     val GetDashboardDetail: GetDashboardDetail,
+    val CreateDashboard: CreateDashboard,
+    val AddDashboardAccount: AddDashboardAccount,
 )
