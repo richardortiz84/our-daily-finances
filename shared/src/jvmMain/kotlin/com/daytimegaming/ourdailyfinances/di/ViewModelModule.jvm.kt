@@ -8,6 +8,7 @@ import com.daytimegaming.ourdailyfinances.presentation.home.AccountsViewModel
 import com.daytimegaming.ourdailyfinances.presentation.home.DashboardsViewModel
 import com.daytimegaming.ourdailyfinances.presentation.home.SettingsViewModel
 import com.daytimegaming.ourdailyfinances.presentation.home.TransactionsViewModel
+import com.daytimegaming.ourdailyfinances.presentation.manageaccounts.ManageAccountsViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.viewModel
@@ -20,6 +21,7 @@ actual fun viewModelModule(): Module = module {
     viewModelOf(::AccountsViewModel)
     viewModelOf(::TransactionsViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::ManageAccountsViewModel)
     viewModel { params -> DashboardDetailViewModel(params.get(), get()) }
     viewModel { params -> AccountDetailViewModel(params.get(), get(), get()) }
 }

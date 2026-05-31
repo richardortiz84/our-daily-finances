@@ -17,10 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +42,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AccountsScreen(
     onAccountClick: (String) -> Unit,
     onPlaidTokenReady: (String) -> Unit,
+    onManageAccounts: () -> Unit,
     viewModel: AccountsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -65,21 +68,36 @@ fun AccountsScreen(
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            val isAdding = (state as? AccountsScreenState.Loaded)?.isAddingAccount == true
-            if (isAdding) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            } else {
-                Button(
-                    onClick = { viewModel.requestAddAccount() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color(0xFF003731)
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Link")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Link", style = MaterialTheme.typography.labelSmall)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val loaded = state as? AccountsScreenState.Loaded
+                if (loaded != null && loaded.accounts.isNotEmpty()) {
+                    IconButton(onClick = onManageAccounts) {
+                        Icon(
+                            imageVector = Icons.Default.Tune,
+                            contentDescription = "Manage Accounts",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                val isAdding = loaded?.isAddingAccount == true
+                if (isAdding) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                } else {
+                    Button(
+                        onClick = { viewModel.requestAddAccount() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color(0xFF003731)
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Link")
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Link", style = MaterialTheme.typography.labelSmall)
+                    }
                 }
             }
         }

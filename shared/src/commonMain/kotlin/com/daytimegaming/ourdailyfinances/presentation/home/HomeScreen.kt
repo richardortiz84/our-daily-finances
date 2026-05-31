@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +38,7 @@ fun HomeScreen(
     onDashboardClick: (String) -> Unit,
     onAccountClick: (String) -> Unit,
     onPlaidTokenReady: (String) -> Unit,
+    onManageAccounts: () -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(HomeTab.Dashboards) }
 
@@ -60,7 +61,8 @@ fun HomeScreen(
                 )
                 HomeTab.Accounts -> AccountsScreen(
                     onAccountClick = onAccountClick,
-                    onPlaidTokenReady = onPlaidTokenReady
+                    onPlaidTokenReady = onPlaidTokenReady,
+                    onManageAccounts = onManageAccounts
                 )
                 HomeTab.Transactions -> TransactionsScreen()
                 HomeTab.Settings -> SettingsScreen()
@@ -77,7 +79,7 @@ private fun GlassBottomBar(
     val tabs = listOf(
         HomeTab.Dashboards to Icons.Default.Dashboard,
         HomeTab.Accounts to Icons.Default.AccountBalance,
-        HomeTab.Transactions to Icons.Default.ReceiptLong,
+        HomeTab.Transactions to Icons.AutoMirrored.Filled.ReceiptLong,
         HomeTab.Settings to Icons.Default.Settings
     )
 
