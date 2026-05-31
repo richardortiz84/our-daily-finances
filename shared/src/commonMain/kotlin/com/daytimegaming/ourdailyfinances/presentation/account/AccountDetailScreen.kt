@@ -40,7 +40,7 @@ import org.koin.core.parameter.parametersOf
 fun AccountDetailScreen(
     accountId: String,
     onNavigateBack: () -> Unit,
-    viewModel: AccountDetailViewModel = koinViewModel { parametersOf(accountId) }
+    viewModel: AccountDetailViewModel = koinViewModel(key = accountId) { parametersOf(accountId) }
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

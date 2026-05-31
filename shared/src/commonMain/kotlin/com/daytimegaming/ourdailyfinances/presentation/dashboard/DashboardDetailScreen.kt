@@ -36,7 +36,7 @@ import org.koin.core.parameter.parametersOf
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardDetailScreen(dashboardId: String, onNavigateBack: () -> Unit) {
-    val viewModel = koinViewModel<DashboardDetailViewModel> { parametersOf(dashboardId) }
+    val viewModel = koinViewModel<DashboardDetailViewModel>(key = dashboardId) { parametersOf(dashboardId) }
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     Scaffold(
