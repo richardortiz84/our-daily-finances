@@ -18,10 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +41,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AccountsScreen(
     onPlaidTokenReady: (String) -> Unit,
-    viewModel: AccountsViewModel = koinViewModel()
+    onManageAccounts: () -> Unit,
+    viewModel: AccountsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -49,35 +52,41 @@ fun AccountsScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = "Linked Accounts",
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            val isAdding = (state as? AccountsScreenState.Loaded)?.isAddingAccount == true
-            if (isAdding) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            } else {
-                Button(
-                    onClick = { viewModel.requestAddAccount() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color(0xFF003731)
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Link")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Link", style = MaterialTheme.typography.labelSmall)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val loaded = state as? AccountsScreenState.Loaded
+                if (loaded != null && loaded.accounts.isNotEmpty()) {
+                    IconButton(onClick = onManageAccounts) {
+                        Icon(
+                            imageVector = Icons.Default.Tune,
+                            contentDescription = "Manage Accounts",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                if (loaded?.isAddingAccount == true) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                } else {
+                    Button(
+                        onClick = { viewModel.requestAddAccount() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color(0xFF003731),
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                    ) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Link")
+                    }
                 }
             }
         }
@@ -94,12 +103,27 @@ fun AccountsScreen(
                 }
             }
             is AccountsScreenState.Loaded -> {
+                if (s.isLinkingAccount) {
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = {},
+                        title = { Text("Linking your account...") },
+                        text = {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        },
+                        confirmButton = {},
+                    )
+                }
                 if (s.accounts.isEmpty()) {
                     GlassCard(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = "No linked bank accounts. Click Link above to connect via Plaid.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 } else {
@@ -112,25 +136,25 @@ fun AccountsScreen(
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
                                             text = account.name,
                                             style = MaterialTheme.typography.headlineMedium,
-                                            color = MaterialTheme.colorScheme.onSurface
+                                            color = MaterialTheme.colorScheme.onSurface,
                                         )
                                         account.subtype?.let {
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Box(
                                                 modifier = Modifier
                                                     .background(Color(0x1FBEC6E0), shape = RoundedCornerShape(999.dp))
-                                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                                                    .padding(horizontal = 8.dp, vertical = 2.dp),
                                             ) {
                                                 Text(
                                                     text = it.uppercase(),
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    color = MaterialTheme.colorScheme.secondary
+                                                    color = MaterialTheme.colorScheme.secondary,
                                                 )
                                             }
                                         }
@@ -139,7 +163,7 @@ fun AccountsScreen(
                                         Text(
                                             text = "${account.isoCurrencyCode ?: "$"} ${balance.formatAmount()}",
                                             style = MaterialTheme.typography.headlineMedium,
-                                            color = MaterialTheme.colorScheme.primary
+                                            color = MaterialTheme.colorScheme.primary,
                                         )
                                     }
                                 }
