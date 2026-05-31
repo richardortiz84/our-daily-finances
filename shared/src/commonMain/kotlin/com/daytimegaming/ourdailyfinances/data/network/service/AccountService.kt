@@ -6,6 +6,7 @@ import com.daytimegaming.ourdailyfinances.data.network.dto.LinkExchangeRequest
 import com.daytimegaming.ourdailyfinances.data.network.dto.LinkExchangeResponse
 import com.daytimegaming.ourdailyfinances.data.network.dto.LinkTokenResponse
 import com.daytimegaming.ourdailyfinances.data.network.dto.PlaidItemsResponse
+import com.daytimegaming.ourdailyfinances.data.network.dto.TransactionsResponse
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -33,4 +34,7 @@ class AccountService(private val apiClient: ApiClient) {
     suspend fun unlinkItem(itemId: String) {
         apiClient.http.delete("${apiClient.baseUrl}/plaid/items/$itemId")
     }
+
+    suspend fun getTransactions(): TransactionsResponse =
+        apiClient.http.get("${apiClient.baseUrl}/plaid/transactions").body()
 }
