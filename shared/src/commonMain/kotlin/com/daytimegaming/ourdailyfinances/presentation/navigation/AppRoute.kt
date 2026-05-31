@@ -9,4 +9,5 @@ sealed class AppRoute : NavKey {
     @Serializable data object Register : AppRoute()
     @Serializable data object Home : AppRoute()
     @Serializable data class DashboardDetail(val dashboardId: String) : AppRoute()
+    @Serializable data object ManageAccounts : AppRoute()
 }

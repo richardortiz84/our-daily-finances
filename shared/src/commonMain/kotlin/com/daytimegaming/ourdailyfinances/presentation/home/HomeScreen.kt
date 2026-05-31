@@ -40,6 +40,7 @@ private enum class HomeTab {
 fun HomeScreen(
     onDashboardClick: (String) -> Unit,
     onPlaidTokenReady: (String) -> Unit,
+    onManageAccounts: () -> Unit,
 ) {
     val tabHistory: SnapshotStateList<HomeTab> = rememberSaveable(
         saver = listSaver(
@@ -77,7 +78,8 @@ fun HomeScreen(
                     onDashboardClick = onDashboardClick
                 )
                 HomeTab.Accounts -> AccountsScreen(
-                    onPlaidTokenReady = onPlaidTokenReady
+                    onPlaidTokenReady = onPlaidTokenReady,
+                    onManageAccounts = onManageAccounts,
                 )
                 HomeTab.Transactions -> TransactionsScreen()
                 HomeTab.Settings -> SettingsScreen()

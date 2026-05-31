@@ -12,6 +12,7 @@ import com.daytimegaming.ourdailyfinances.presentation.auth.LoginScreen
 import com.daytimegaming.ourdailyfinances.presentation.auth.RegisterScreen
 import com.daytimegaming.ourdailyfinances.presentation.dashboard.DashboardDetailScreen
 import com.daytimegaming.ourdailyfinances.presentation.home.HomeScreen
+import com.daytimegaming.ourdailyfinances.presentation.manageaccounts.ManageAccountsScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
@@ -22,6 +23,7 @@ private val navSavedStateConfig = SavedStateConfiguration {
             subclass(AppRoute.Register::class, AppRoute.Register.serializer())
             subclass(AppRoute.Home::class, AppRoute.Home.serializer())
             subclass(AppRoute.DashboardDetail::class, AppRoute.DashboardDetail.serializer())
+            subclass(AppRoute.ManageAccounts::class, AppRoute.ManageAccounts.serializer())
         }
     }
 }
@@ -64,11 +66,17 @@ fun AppNavigation(
                         backStack.add(AppRoute.DashboardDetail(dashboardId))
                     },
                     onPlaidTokenReady = onPlaidTokenReady,
+                    onManageAccounts = { backStack.add(AppRoute.ManageAccounts) },
                 )
             }
             entry<AppRoute.DashboardDetail> { route ->
                 DashboardDetailScreen(
                     dashboardId = route.dashboardId,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                )
+            }
+            entry<AppRoute.ManageAccounts> {
+                ManageAccountsScreen(
                     onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
