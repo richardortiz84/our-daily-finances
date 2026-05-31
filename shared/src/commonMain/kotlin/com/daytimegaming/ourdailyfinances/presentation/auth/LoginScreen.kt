@@ -1,23 +1,34 @@
 package com.daytimegaming.ourdailyfinances.presentation.auth
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,15 +36,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ourdailyfinances.shared.generated.resources.Res
-import ourdailyfinances.shared.generated.resources.logo_mark
+import com.daytimegaming.ourdailyfinances.presentation.theme.GlassCard
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+import ourdailyfinances.shared.generated.resources.Res
+import ourdailyfinances.shared.generated.resources.app_icon
 
 @Composable
 fun LoginScreen(onNavigateToRegister: () -> Unit) {
@@ -43,80 +58,221 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .safeContentPadding()
-            .imePadding()
-            .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .background(
+                Brush.radialGradient(
+                    colors = listOf(Color(0xFF1D2022), Color(0xFF101415)),
+                    center = Offset(1000f, 0f),
+                    radius = 1800f
+                )
+            )
     ) {
-        Image(
-            painter = painterResource(Res.drawable.logo_mark),
-            contentDescription = null,
-            modifier = Modifier.size(88.dp),
+        // Ambient glows behind content
+        // Top-left Teal glow
+        Box(
+            modifier = Modifier
+                .size(400.dp)
+                .align(Alignment.TopStart)
+                .offset(x = (-100).dp, y = (-100).dp)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(Color(0x2457F1DB), Color.Transparent),
+                        radius = 600f
+                    )
+                )
         )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = "Our Daily Finances",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            text = "Sign in to your account",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(32.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Spacer(Modifier.height(12.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
+        // Center-right Slate glow
+        Box(
+            modifier = Modifier
+                .size(500.dp)
+                .align(Alignment.CenterEnd)
+                .offset(x = 150.dp, y = 100.dp)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(Color(0x0FAFBFD9), Color.Transparent),
+                        radius = 800f
+                    )
+                )
         )
 
-        if (state is AuthScreenState.Error) {
+        // Main Login Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeContentPadding()
+                .imePadding()
+                .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.app_icon),
+                contentDescription = "Logo",
+                modifier = Modifier.size(96.dp),
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = "Our Daily Finances",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = (state as AuthScreenState.Error).message,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
+                text = "Sign in to your account",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-        }
+            Spacer(Modifier.height(32.dp))
 
-        Spacer(Modifier.height(24.dp))
-
-        if (state is AuthScreenState.Loading) {
-            CircularProgressIndicator()
-        } else {
-            Button(
-                onClick = { viewModel.login(email, password) },
-                enabled = email.isNotBlank() && password.isNotBlank(),
-                modifier = Modifier.fillMaxWidth(),
+            // Glassmorphic Input Form Container
+            GlassCard(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Sign In")
-            }
-        }
+                // Email Field Group
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Email",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
+                    )
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        placeholder = { Text("name@example.com", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Mail,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(8.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
 
-        Spacer(Modifier.height(8.dp))
-        TextButton(onClick = onNavigateToRegister) {
-            Text("Don't have an account? Register")
+                Spacer(Modifier.height(16.dp))
+
+                // Password Field Group
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Password",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
+                        )
+                        Text(
+                            text = "Forgot Password?",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .padding(end = 4.dp, bottom = 4.dp)
+                                .clickable { /* Mock flow */ }
+                        )
+                    }
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        placeholder = { Text("••••••••", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+
+                if (state is AuthScreenState.Error) {
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = (state as AuthScreenState.Error).message,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                if (state is AuthScreenState.Loading) {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
+                } else {
+                    Button(
+                        onClick = { viewModel.login(email, password) },
+                        enabled = email.isNotBlank() && password.isNotBlank(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color(0xFF003731), // Navy text for contrast
+                            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            disabledContentColor = Color(0xFF003731).copy(alpha = 0.5f)
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = "Sign In",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+
+            // Secondary Action (Register Navigation)
+            Row(
+                modifier = Modifier.padding(top = 24.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Don't have an account? ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "Register",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable(onClick = onNavigateToRegister)
+                )
+            }
         }
     }
 }

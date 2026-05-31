@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,14 +43,13 @@ fun DashboardsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
         Text(
+            modifier = Modifier.padding(16.dp),
             text = "Financial Overview",
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(16.dp))
 
         when (val s = state) {
             is DashboardsScreenState.Loading -> {
@@ -75,7 +75,7 @@ fun DashboardsScreen(
             is DashboardsScreenState.Loaded -> {
                 // Total Balance Glass Card
                 GlassCard(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(16.dp)
                 ) {
                     Text(
                         text = "Total Wealth Balance",
@@ -106,16 +106,15 @@ fun DashboardsScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
                 Text(
+                    modifier = Modifier.padding(16.dp),
                     text = "Active Dashboards",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(modifier = Modifier.height(8.dp))
 
                 if (s.dashboards.isEmpty()) {
-                    GlassCard(modifier = Modifier.fillMaxWidth()) {
+                    GlassCard(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         Text(
                             text = "No dashboards configured yet.",
                             style = MaterialTheme.typography.bodyMedium,
@@ -124,7 +123,8 @@ fun DashboardsScreen(
                     }
                 } else {
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(16.dp),
                     ) {
                         items(s.dashboards, key = { it.dashboardId }) { dashboard ->
                             GlassCard(
