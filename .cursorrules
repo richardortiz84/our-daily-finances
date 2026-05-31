@@ -1,0 +1,13 @@
+# AI Coding Rules for Our Daily Finances
+
+## Jetpack Compose / Compose Multiplatform Guidelines
+
+### 1. Scaffold and Window Insets
+- **Double Padding Prevention**: NEVER apply `safeContentPadding()` or `safeDrawingPadding()` to components inside a `Scaffold`'s `bottomBar` or `topBar` lambdas, as they include top insets which cause double padding. However, if using a custom container (like a raw `Box`) inside `bottomBar`, you SHOULD apply `navigationBarsPadding()` so the bar is not obscured by the system navigation bar on edge-to-edge screens.
+- **Content Padding Consumption**: Inside the `Scaffold` content block, always consume the `PaddingValues` passed by the scaffold using `modifier = Modifier.padding(innerPadding)` to ensure contents do not get drawn under the top or bottom bars.
+
+### 2. General Clean Architecture
+- Follow the established package structure:
+  - `domain`: Contains business models, use cases, and repository interfaces. Write mutations (such as creation or updates) as clean suspend functions in repositories.
+  - `data`: Contains network services (Ktor), DTO definitions (Kotlinx Serialization), and repository implementations.
+  - `presentation`: Contains ViewModels and Compose screen UI components. ViewModels are defined per screen/feature and registered in target platforms via Koin constructor injection / `viewModelOf`.
