@@ -3,11 +3,13 @@ package com.daytimegaming.ourdailyfinances.di
 import com.daytimegaming.ourdailyfinances.data.repository.AccountRepositoryImpl
 import com.daytimegaming.ourdailyfinances.data.repository.AuthRepositoryImpl
 import com.daytimegaming.ourdailyfinances.data.repository.DashboardRepositoryImpl
+import com.daytimegaming.ourdailyfinances.data.repository.TransactionRepositoryImpl
 import com.daytimegaming.ourdailyfinances.domain.plaid.PlaidEventBus
 import com.daytimegaming.ourdailyfinances.domain.plaid.PlaidItemsEventBus
 import com.daytimegaming.ourdailyfinances.domain.repository.AccountRepository
 import com.daytimegaming.ourdailyfinances.domain.repository.AuthRepository
 import com.daytimegaming.ourdailyfinances.domain.repository.DashboardRepository
+import com.daytimegaming.ourdailyfinances.domain.repository.TransactionRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import org.koin.dsl.module
@@ -17,6 +19,7 @@ fun repositoryModule() = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<DashboardRepository> { DashboardRepositoryImpl(get()) }
     single<AccountRepository> { AccountRepositoryImpl(get()) }
+    single<TransactionRepository> { TransactionRepositoryImpl(get()) }
     single { PlaidEventBus() }
     single { PlaidItemsEventBus() }
 }
