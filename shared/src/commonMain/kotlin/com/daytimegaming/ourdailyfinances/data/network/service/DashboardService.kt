@@ -6,8 +6,12 @@ import com.daytimegaming.ourdailyfinances.data.network.dto.DashboardListResponse
 import com.daytimegaming.ourdailyfinances.data.network.dto.CreateDashboardRequest
 import com.daytimegaming.ourdailyfinances.data.network.dto.AddDashboardAccountRequest
 import com.daytimegaming.ourdailyfinances.data.network.dto.DashboardDto
+import com.daytimegaming.ourdailyfinances.data.network.dto.DashboardInviteDto
+import com.daytimegaming.ourdailyfinances.data.network.dto.JoinDashboardRequest
+import com.daytimegaming.ourdailyfinances.data.network.dto.JoinDashboardResponse
 import com.daytimegaming.ourdailyfinances.data.network.dto.MessageResponse
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -32,4 +36,22 @@ class DashboardService(private val apiClient: ApiClient) {
             contentType(ContentType.Application.Json)
             setBody(AddDashboardAccountRequest(accountId))
         }.body()
+
+    suspend fun createInvite(dashboardId: String): DashboardInviteDto =
+        apiClient.http.post("${apiClient.baseUrl}/dashboards/$dashboardId/invites").body()
+
+    suspend fun revokeInvite(dashboardId: String, code: String): MessageResponse =
+        apiClient.http.delete("${apiClient.baseUrl}/dashboards/$dashboardId/invites/$code").body()
+
+    suspend fun joinDashboard(inviteCode: String): JoinDashboardResponse =
+        apiClient.http.post("${apiClient.baseUrl}/dashboards/join") {
+            contentType(ContentType.Application.Json)
+            setBody(JoinDashboardRequest(inviteCode))
+        }.body()
+
+    suspend fun leaveDashboard(dashboardId: String): MessageResponse =
+        apiClient.http.delete("${apiClient.baseUrl}/dashboards/$dashboardId/leave").body()
+
+    suspend fun removeDashboardAccount(dashboardId: String, accountId: String): MessageResponse =
+        apiClient.http.delete("${apiClient.baseUrl}/dashboards/$dashboardId/accounts/$accountId").body()
 }

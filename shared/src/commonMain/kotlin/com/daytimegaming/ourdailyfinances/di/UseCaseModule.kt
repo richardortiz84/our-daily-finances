@@ -9,6 +9,11 @@ import com.daytimegaming.ourdailyfinances.domain.usecase.GetAccounts
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetCurrentUser
 import com.daytimegaming.ourdailyfinances.domain.usecase.CreateDashboard
 import com.daytimegaming.ourdailyfinances.domain.usecase.AddDashboardAccount
+import com.daytimegaming.ourdailyfinances.domain.usecase.CreateInvite
+import com.daytimegaming.ourdailyfinances.domain.usecase.RevokeInvite
+import com.daytimegaming.ourdailyfinances.domain.usecase.JoinDashboard
+import com.daytimegaming.ourdailyfinances.domain.usecase.LeaveDashboard
+import com.daytimegaming.ourdailyfinances.domain.usecase.RemoveDashboardAccount
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetDashboardDetail
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetDashboards
 import com.daytimegaming.ourdailyfinances.domain.usecase.GetIdToken
@@ -32,6 +37,11 @@ fun useCaseModule() = module {
     singleOf(::GetDashboardDetail)
     singleOf(::CreateDashboard)
     singleOf(::AddDashboardAccount)
+    singleOf(::CreateInvite)
+    singleOf(::RevokeInvite)
+    singleOf(::JoinDashboard)
+    singleOf(::LeaveDashboard)
+    singleOf(::RemoveDashboardAccount)
     singleOf(::DashboardUseCase)
 
     singleOf(::GetAccounts)

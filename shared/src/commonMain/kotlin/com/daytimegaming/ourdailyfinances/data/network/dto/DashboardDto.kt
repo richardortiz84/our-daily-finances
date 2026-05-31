@@ -4,11 +4,17 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class DashboardInviteDto(
+    @SerialName("code") val code: String,
+    @SerialName("created_at") val createdAt: String,
+)
+
+@Serializable
 data class DashboardDto(
     @SerialName("dashboard_id") val dashboardId: String,
     @SerialName("name") val name: String,
     @SerialName("owner_user_id") val ownerUserId: String,
-    @SerialName("invite_code") val inviteCode: String? = null,
+    @SerialName("invites") val invites: List<DashboardInviteDto>? = null,
 )
 
 @Serializable
@@ -40,7 +46,7 @@ data class DashboardDetailDto(
     @SerialName("dashboard_id") val dashboardId: String,
     @SerialName("name") val name: String,
     @SerialName("owner_user_id") val ownerUserId: String,
-    @SerialName("invite_code") val inviteCode: String? = null,
+    @SerialName("invites") val invites: List<DashboardInviteDto>? = null,
     @SerialName("members") val members: List<DashboardMemberDto>,
     @SerialName("accounts") val accounts: List<DashboardAccountDto>,
     @SerialName("transactions") val transactions: List<TransactionDto> = emptyList(),
@@ -54,6 +60,17 @@ data class CreateDashboardRequest(
 @Serializable
 data class AddDashboardAccountRequest(
     @SerialName("account_id") val accountId: String,
+)
+
+@Serializable
+data class JoinDashboardRequest(
+    @SerialName("invite_code") val inviteCode: String,
+)
+
+@Serializable
+data class JoinDashboardResponse(
+    @SerialName("dashboard_id") val dashboardId: String,
+    @SerialName("name") val name: String,
 )
 
 @Serializable

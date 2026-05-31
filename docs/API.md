@@ -196,9 +196,11 @@ Returns cached transactions for all of the user's linked accounts, ordered by da
 
 Dashboards are shared views that pool accounts from multiple users. The creator is the owner. Any member can add or remove their own linked accounts. Non-owner members can leave; leaving removes their accounts from the dashboard.
 
+Invite codes are separate objects — the owner creates them on demand via `POST /dashboards/{id}/invites`. Each code is **single-use**: it is deleted when someone joins with it. Multiple invite codes can be active at once.
+
 ### `POST /dashboards`
 
-Creates a new dashboard. The creator is automatically added as a member and becomes the owner. An 8-character invite code is generated for sharing.
+Creates a new dashboard. The creator is automatically added as a member and becomes the owner.
 
 **Request body**
 ```json
@@ -210,16 +212,17 @@ Creates a new dashboard. The creator is automatically added as a member and beco
 {
   "dashboard_id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "Family Budget",
-  "owner_user_id": "firebase-uid-abc",
-  "invite_code": "A3F2B190"
+  "owner_user_id": "firebase-uid-abc"
 }
 ```
+
+To invite someone, create an invite code with `POST /dashboards/{id}/invites`.
 
 ---
 
 ### `GET /dashboards`
 
-Lists all dashboards the authenticated user belongs to (owned or joined). The `invite_code` is only returned for dashboards the user owns.
+Lists all dashboards the authenticated user belongs to (owned or joined). `invites` is only populated for dashboards the user owns; non-owners see `null`.
 
 **Response `200`**
 ```json
@@ -229,13 +232,15 @@ Lists all dashboards the authenticated user belongs to (owned or joined). The `i
       "dashboard_id": "550e8400-e29b-41d4-a716-446655440000",
       "name": "Family Budget",
       "owner_user_id": "firebase-uid-abc",
-      "invite_code": "A3F2B190"
+      "invites": [
+        { "code": "A3F2B190", "created_at": "2024-01-15T10:30:00+00:00" }
+      ]
     },
     {
       "dashboard_id": "661f9511-f30c-52e5-b827-557766551111",
       "name": "Shared Expenses",
       "owner_user_id": "firebase-uid-xyz",
-      "invite_code": null
+      "invites": null
     }
   ]
 }
@@ -243,9 +248,52 @@ Lists all dashboards the authenticated user belongs to (owned or joined). The `i
 
 ---
 
+### `POST /dashboards/{dashboard_id}/invites`
+
+Creates a new invite code for the dashboard. Owner only. Multiple codes can be active simultaneously. Each code is single-use — consumed when someone joins.
+
+**Path parameter**
+| Param | Type | Description |
+|---|---|---|
+| `dashboard_id` | UUID | Dashboard to create the invite for |
+
+**Response `200`**
+```json
+{
+  "code": "A3F2B190",
+  "created_at": "2024-01-15T10:30:00+00:00"
+}
+```
+
+**Response `403`** — Not the owner.  
+**Response `404`** — Dashboard not found.  
+**Response `500`** — Could not generate a unique code after retries (exceedingly rare).
+
+---
+
+### `DELETE /dashboards/{dashboard_id}/invites/{code}`
+
+Revokes an active invite code. Owner only.
+
+**Path parameters**
+| Param | Type | Description |
+|---|---|---|
+| `dashboard_id` | UUID | Dashboard the invite belongs to |
+| `code` | string | The 8-character invite code to revoke |
+
+**Response `200`**
+```json
+{ "message": "Invite revoked." }
+```
+
+**Response `403`** — Not the owner.  
+**Response `404`** — Dashboard not found or code not found on this dashboard.
+
+---
+
 ### `POST /dashboards/join`
 
-Joins a dashboard using an invite code shared by the owner.
+Joins a dashboard using an invite code. The code is consumed (deleted) on success — it cannot be reused.
 
 **Request body**
 ```json
@@ -260,7 +308,7 @@ Joins a dashboard using an invite code shared by the owner.
 }
 ```
 
-**Response `404`** — Invalid invite code.  
+**Response `404`** — Invalid or already-used invite code.  
 **Response `409`** — Already a member of this dashboard.
 
 ---
@@ -332,7 +380,7 @@ Removes an account from a dashboard. Only the user who added the account can rem
 
 ### `GET /dashboards/{dashboard_id}`
 
-Returns full dashboard detail: member list, all linked accounts with balances, and all transactions for those accounts. Must be a member to view. `invite_code` is only returned to the owner.
+Returns full dashboard detail: member list, all linked accounts with balances, and all transactions for those accounts. Must be a member to view. `invites` is only populated for the owner; non-owners see `null`.
 
 **Path parameter**
 | Param | Type | Description |
@@ -345,7 +393,9 @@ Returns full dashboard detail: member list, all linked accounts with balances, a
   "dashboard_id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "Family Budget",
   "owner_user_id": "firebase-uid-abc",
-  "invite_code": "A3F2B190",
+  "invites": [
+    { "code": "A3F2B190", "created_at": "2024-01-15T10:30:00+00:00" }
+  ],
   "members": [
     {
       "user_id": "firebase-uid-abc",
@@ -418,12 +468,12 @@ All error responses use FastAPI's default shape:
    GET /plaid/transactions         → transactions[]
 
 4. Create a shared dashboard:
-   POST /dashboards                → dashboard_id, invite_code
+   POST /dashboards                → dashboard_id
+   POST /dashboards/{id}/invites   → code (share out-of-band)
    POST /dashboards/{id}/accounts  → add an account to it
-   (share invite_code out-of-band)
 
 5. Other user joins and contributes:
-   POST /dashboards/join           → join by invite_code
+   POST /dashboards/join           → join by invite code (single-use, consumed on join)
    POST /dashboards/{id}/accounts  → add their own account
 
 6. View combined dashboard:

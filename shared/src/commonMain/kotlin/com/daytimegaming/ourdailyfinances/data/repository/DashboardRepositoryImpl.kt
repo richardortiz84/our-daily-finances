@@ -5,7 +5,9 @@ import com.daytimegaming.ourdailyfinances.domain.Response
 import com.daytimegaming.ourdailyfinances.domain.model.Dashboard
 import com.daytimegaming.ourdailyfinances.domain.model.DashboardAccount
 import com.daytimegaming.ourdailyfinances.domain.model.DashboardDetail
+import com.daytimegaming.ourdailyfinances.domain.model.DashboardInvite
 import com.daytimegaming.ourdailyfinances.domain.model.DashboardMember
+import com.daytimegaming.ourdailyfinances.domain.model.JoinedDashboard
 import com.daytimegaming.ourdailyfinances.domain.model.Transaction
 import com.daytimegaming.ourdailyfinances.domain.repository.DashboardRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +24,7 @@ class DashboardRepositoryImpl(private val service: DashboardService) : Dashboard
                     dashboardId = dto.dashboardId,
                     name = dto.name,
                     ownerUserId = dto.ownerUserId,
-                    inviteCode = dto.inviteCode,
+                    invites = dto.invites?.map { DashboardInvite(it.code, it.createdAt) },
                 )
             }
             emit(Response.Success(dashboards))
@@ -39,7 +41,7 @@ class DashboardRepositoryImpl(private val service: DashboardService) : Dashboard
                 dashboardId = dto.dashboardId,
                 name = dto.name,
                 ownerUserId = dto.ownerUserId,
-                inviteCode = dto.inviteCode,
+                invites = dto.invites?.map { DashboardInvite(it.code, it.createdAt) },
                 members = dto.members.map { DashboardMember(it.userId, it.joinedAt) },
                 accounts = dto.accounts.map { a ->
                     DashboardAccount(
@@ -81,7 +83,7 @@ class DashboardRepositoryImpl(private val service: DashboardService) : Dashboard
                 dashboardId = dto.dashboardId,
                 name = dto.name,
                 ownerUserId = dto.ownerUserId,
-                inviteCode = dto.inviteCode
+                invites = dto.invites?.map { DashboardInvite(it.code, it.createdAt) }
             )
             Response.Success(dashboard)
         } catch (e: Exception) {
@@ -95,6 +97,51 @@ class DashboardRepositoryImpl(private val service: DashboardService) : Dashboard
             Response.Success(Unit)
         } catch (e: Exception) {
             Response.Error(e.message ?: "Failed to add account to dashboard")
+        }
+    }
+
+    override suspend fun createInvite(dashboardId: String): Response<DashboardInvite> {
+        return try {
+            val dto = service.createInvite(dashboardId)
+            Response.Success(DashboardInvite(dto.code, dto.createdAt))
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Failed to create invite code")
+        }
+    }
+
+    override suspend fun revokeInvite(dashboardId: String, code: String): Response<Unit> {
+        return try {
+            service.revokeInvite(dashboardId, code)
+            Response.Success(Unit)
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Failed to revoke invite code")
+        }
+    }
+
+    override suspend fun joinDashboard(inviteCode: String): Response<JoinedDashboard> {
+        return try {
+            val res = service.joinDashboard(inviteCode)
+            Response.Success(JoinedDashboard(res.dashboardId, res.name))
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Failed to join dashboard")
+        }
+    }
+
+    override suspend fun leaveDashboard(dashboardId: String): Response<Unit> {
+        return try {
+            service.leaveDashboard(dashboardId)
+            Response.Success(Unit)
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Failed to leave dashboard")
+        }
+    }
+
+    override suspend fun removeDashboardAccount(dashboardId: String, accountId: String): Response<Unit> {
+        return try {
+            service.removeDashboardAccount(dashboardId, accountId)
+            Response.Success(Unit)
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Failed to remove account from dashboard")
         }
     }
 }
