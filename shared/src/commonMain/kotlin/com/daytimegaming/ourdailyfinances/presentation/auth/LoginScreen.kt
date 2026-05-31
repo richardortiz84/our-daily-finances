@@ -141,7 +141,7 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        placeholder = { Text("name@example.com", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        placeholder = { Text("name@example.com", color = MaterialTheme.colorScheme.surfaceVariant) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Mail,
@@ -160,7 +160,7 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                             focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.surfaceVariant,
                         ),
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -193,7 +193,7 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        placeholder = { Text("••••••••", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        placeholder = { Text("••••••••", color = MaterialTheme.colorScheme.surfaceVariant) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
@@ -212,7 +212,7 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                             focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.surfaceVariant,
                         ),
                         modifier = Modifier.fillMaxWidth(),
                     )

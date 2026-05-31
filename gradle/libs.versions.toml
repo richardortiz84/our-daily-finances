@@ -1,7 +1,7 @@
 [versions]
 adaptive = "1.2.0"
 agp = "9.0.1"
-buildkonfig = "0.15.2"
+buildkonfig = "0.21.2"
 nav3 = "1.0.0-alpha06"
 android-compileSdk = "36"
 android-minSdk = "24"

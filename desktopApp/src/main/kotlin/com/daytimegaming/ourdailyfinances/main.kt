@@ -58,11 +58,11 @@ private fun initFirebase() {
     )
 
     val options = FirebaseOptions(
-        projectId = "ourdailyfinances",
-        applicationId = "1:861129828943:web:6fef67d9b570aa877e183a",
-        apiKey = "AIzaSyAPOICLHlGGgHDDEwNRRreQe5T8jqXiwuU",
-        authDomain = "ourdailyfinances.firebasestorage.appm",
-        storageBucket = "ourdailyfinances.firebasestorage.app",
+        projectId = BuildKonfig.FIREBASE_PROJECT_ID,
+        applicationId = BuildKonfig.FIREBASE_APPLICATION_ID,
+        apiKey = BuildKonfig.FIREBASE_API_KEY,
+        authDomain = BuildKonfig.FIREBASE_AUTH_DOMAIN,
+        storageBucket = BuildKonfig.FIREBASE_STORAGE_BUCKET,
     )
 
     Firebase.initialize(Application(), options)

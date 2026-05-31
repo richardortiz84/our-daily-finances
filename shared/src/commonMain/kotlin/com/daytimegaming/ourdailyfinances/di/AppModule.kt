@@ -5,6 +5,7 @@ import org.koin.core.context.startKoin
 fun initKoin(enableHttpLogging: Boolean = false) {
     startKoin {
         modules(
+            platformModule(),
             networkModule(enableHttpLogging),
             repositoryModule(),
             useCaseModule(),

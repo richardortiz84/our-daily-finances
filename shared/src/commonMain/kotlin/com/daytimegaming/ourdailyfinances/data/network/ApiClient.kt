@@ -2,6 +2,7 @@ package com.daytimegaming.ourdailyfinances.data.network
 
 import com.daytimegaming.ourdailyfinances.BuildKonfig
 import com.daytimegaming.ourdailyfinances.domain.repository.AuthRepository
+import com.daytimegaming.ourdailyfinances.data.settings.SettingsManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.auth.Auth
@@ -19,9 +20,15 @@ import kotlinx.serialization.json.Json
 class ApiClient(
     engine: HttpClientEngine,
     private val authRepository: AuthRepository,
+    private val settingsManager: SettingsManager,
     enableLogging: Boolean = false,
 ) {
-    val baseUrl: String = BuildKonfig.API_URL
+    val baseUrl: String
+        get() = if (settingsManager.isStaging()) {
+            BuildKonfig.STAGING_API_URL
+        } else {
+            BuildKonfig.API_URL
+        }
 
     val http: HttpClient = HttpClient(engine) {
         install(ContentNegotiation) {

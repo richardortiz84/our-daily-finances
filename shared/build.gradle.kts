@@ -1,5 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -97,13 +98,30 @@ kotlin {
     }
 }
 
+val env = Properties().apply {
+    val envFile = file("${rootDir}/.env")
+    if (envFile.exists()) {
+        envFile.inputStream().use { stream ->
+            this.load(stream)
+        }
+    }
+}
+
+fun getEnv(key: String, defaultValue: String): String {
+    return System.getenv(key) ?: env.getProperty(key) ?: defaultValue
+}
+
 buildkonfig {
     packageName = "com.daytimegaming.ourdailyfinances"
     defaultConfigs {
-        buildConfigField(
-            STRING, "API_URL",
-            System.getenv("API_URL") ?: "https://our-daily-finances-backend-production.up.railway.app"
-        )
+        buildConfigField(STRING, "API_URL", getEnv("API_URL", ""))
+        buildConfigField(STRING, "STAGING_API_URL", getEnv("STAGING_API_URL", ""))
+        buildConfigField(STRING, "STAGING_API_URL", getEnv("STAGING_API_URL", ""))
+        buildConfigField(STRING, "FIREBASE_PROJECT_ID", getEnv("FIREBASE_PROJECT_ID", ""))
+        buildConfigField(STRING, "FIREBASE_APPLICATION_ID", getEnv("FIREBASE_APPLICATION_ID", ""))
+        buildConfigField(STRING, "FIREBASE_API_KEY", getEnv("FIREBASE_API_KEY", ""))
+        buildConfigField(STRING, "FIREBASE_AUTH_DOMAIN", getEnv("FIREBASE_AUTH_DOMAIN", ""))
+        buildConfigField(STRING, "FIREBASE_STORAGE_BUCKET", getEnv("FIREBASE_STORAGE_BUCKET", ""))
     }
 }
 

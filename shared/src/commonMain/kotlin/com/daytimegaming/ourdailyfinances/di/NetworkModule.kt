@@ -7,7 +7,7 @@ import org.koin.dsl.module
 
 fun networkModule(enableHttpLogging: Boolean = false) = module {
     single { httpClientEngine() }
-    single { ApiClient(get(), get(), enableHttpLogging) }
+    single { ApiClient(get(), get(), get(), enableHttpLogging) }
     single { AccountService(get()) }
     single { DashboardService(get()) }
 }
